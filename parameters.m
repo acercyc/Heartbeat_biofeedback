@@ -8,8 +8,8 @@ para.serial.nByteInBlock = 5;
 
 
 % ------------------------------- reading data ------------------------------- %
-para.read.nByteToReadFromBF = 100;
-para.read.nDataHistoryBF = 75 * 10; % n recent samples to keep
+para.read.nByteToReadFromBF = 25;
+para.read.nDataHistoryBF = 75 * 10 * para.serial.nByteInBlock; % n recent byte to keep
 
 
 % ---------------------------- heartbeat detection --------------------------- %

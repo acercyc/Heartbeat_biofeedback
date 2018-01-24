@@ -3,6 +3,9 @@ classdef Heart < handle
     
     properties
         s        
+        para
+        f_HR = @f_HR_meanDiff
+        f_pred = @f_pred_mean
     end
     
     
@@ -18,20 +21,19 @@ classdef Heart < handle
 
         function open(obj)
             addpath(genpath('lib'));
-            para = parameters();
+            obj.para = parameters();
             instrreset();
             
             % ==================================== %
             % define serial port obj
             % ==================================== %
             obj.s = serial('COM3', 'BaudRate', 9600);
-            obj.s.BytesAvailableFcn = @GetDataFromBF2;
-            obj.s.BytesAvailableFcnCount = para.read.nByteToReadFromBF;
+            obj.s.BytesAvailableFcn = @GetDataFromBF;
+            obj.s.BytesAvailableFcnCount = obj.para.read.nByteToReadFromBF;
             obj.s.BytesAvailableFcnMode = 'byte';
             
-            obj.s.UserData.data = []; %BlockStruct(para.read.nDataHistoryBF);
-            obj.s.UserData.tail = [];
-            obj.s.UserData.tLast = []; 
+            obj.s.UserData.data = [];
+            obj.s.UserData.lastRequestTime = []; 
             
             fopen(obj.s);
         end
@@ -48,54 +50,34 @@ classdef Heart < handle
         % ============================================================================ %
         %                                  Information                                 %
         % ============================================================================ %
-        function hr = HR(obj)
-            [amp, t] = extractAmpAndTime(obj);
-            if isempty(amp)
-                hr = [];
-            else
-                [~, locs] = findpeaks2(amp, 30);
-                peakTime = t(locs);
-                hr = f_HR_meanDiff(peakTime);                
-            end
+        
+        function [hr, sd, pred, amp, t, peakInd] = cal_info(obj)
+            hr = [];
+            sd = [];
+            pred = [];
+            peakInd = [];
+            [amp, t] = extractAmpAndTime(obj); 
+            if isempty(amp), return, end
+            
+            [~, peakInd] = findpeaks2(amp, 30);
+            if length(peakInd) < 2, return, end
+            
+            peakTime = t(peakInd);
+            hr = obj.f_HR(peakTime);  
+            sd = std(diff(peakTime));
+            pred = obj.f_pred(peakTime, 1);            
         end
-        
-        
-        function sd = SD(obj)
-            [amp, t] = extractAmpAndTime(obj);
-            if isempty(amp)
-                sd = [];
-            else
-                [~, locs] = findpeaks2(amp, 30);
-                peakTime = t(locs);
-                sd = std(diff(peakTime));
-            end
-        end        
-        
-        
-        function pred = nextPulse(obj)
-            [amp, t] = extractAmpAndTime(obj);
-            if isempty(amp)
-                pred = [];
-            else
-                [~, locs] = findpeaks2(amp, 30);
-                if length(locs) <2
-                    pred = [];
-                else
-                    peakTime = t(locs);
-                    pred = f_pred_mean(peakTime, 1);
-                end
-            end            
-        end
-        
         
         function [amp, t] = extractAmpAndTime(obj)
-            data = obj.s.UserData.data;
+            [body, ~, ~] = StreamSplit(obj.s.UserData.data, obj.para.serial.nByteInBlock);
+            data = ParsingBlock(body, obj.para.serial.nByteInBlock);
+            
             if isempty(data)
                 amp = [];
                 t = [];
             else
-                amp = [data.Pleth];
-                t = [data.time];    
+                amp = [data.Pleth];            
+                t = calBackwardTiming(obj.s.UserData.lastRequestTime, length(amp), obj.para.device.fs);    
             end            
         end
         
@@ -104,68 +86,53 @@ classdef Heart < handle
         % ============================================================================ %
         function plot(obj)        
             while 1
-                data = obj.s.UserData.data;
-                if isempty(data)
-                    continue
-                end
-                
-                amp = [data.Pleth];
-                t = [data.time];
+                [amp, t] = obj.extractAmpAndTime();
                 plot(t, amp);
-                txt = sprintf('HR: %.1f', obj.HR());
-                title(txt);
-                drawnow();
+                drawnow(); 
                 
-                [keyIsDown, ~, keyCode] = KbCheck();
+                [keyIsDown, ~, keyCode] = KbCheck(); 
                 if keyIsDown
                     if  strcmp('q', KbName(keyCode))
                         break
                     end
                 end
             end            
-        end           
+        end
         
         
         function isPlot = plot2(obj)
         % plot with rich information 
-                data = obj.s.UserData.data;
-                if isempty(data)
-                    isPlot = 0;
-                    return
-                end
-                
-                % compute data
-                [amp, t] = extractAmpAndTime(obj);
-                [peak, locs] = findpeaks2(amp, 30);
-                if length(peak) < 2
-                    isPlot = 0;
-                    return
-                end
-                peakTime = t(locs);
-                pred = f_pred_mean(peakTime(1:end-1), 1);
-                
-                
-                % =============== Plot =============== %
-                % waveform 
-                plot(t, amp);
-                hold on
-                
-                % Peak points                               
-                plot(t(locs), peak, 'o');
-                
-                % prediction 
-                vRange = [min(amp), max(amp)];
-                plot([pred, pred], vRange, 'r');                
-                
-                % text
-                txt = sprintf('HR: %.1f', obj.HR());
-                title(txt);
-                
-                % draw
-                drawnow();                
-                hold off 
-                % ==================================== %
-                isPlot = 1;                        
+            % compute data                     
+            [hr, sd, ~, amp, t, peakInd] = cal_info(obj);
+            if isempty(hr) 
+                isPlot = 0; 
+                return 
+            end 
+            
+            pred = obj.f_pred(t(peakInd(1:end-1)), 1);
+                 
+
+            % =============== Plot =============== %
+            % waveform 
+            plot(t, amp);
+            hold on
+
+            % Peak points                               
+            plot(t(peakInd), amp(peakInd), 'o');
+
+            % prediction 
+            vRange = [min(amp), max(amp)];
+            plot([pred, pred], vRange, 'r');                
+
+            % text
+            txt = sprintf('HR: %.1f; SD: %.2f', hr, sd);
+            title(txt);
+
+            % draw
+            drawnow();                
+            hold off 
+            % ==================================== %
+            isPlot = 1;                        
         end
             
             
