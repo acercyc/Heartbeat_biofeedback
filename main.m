@@ -61,16 +61,26 @@ a.bufferLoading();
 
 %% Message
 txt = PsyText(w);
-
+txt_prompt = PsyText_Prompt(w);
 
 %% Response
 
 
 
 %% Start Experiment
-heart = Heart;
+% ============================================================================ %
+%                                    Welcome                                   %
+% ============================================================================ %
+txt_prompt.playWelcome_and_prompt();
+
+% ============================================================================ %
+%                                  Calibration                                 %
+% ============================================================================ %
+heart = Heart();
 heart.open();
-WaitSecs(10);
+hr_mean = Calibration(w, heart);
+
+
 
 for iTrial = 1:10
     cPulse = 1;

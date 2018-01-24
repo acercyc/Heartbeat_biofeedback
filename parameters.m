@@ -16,6 +16,7 @@ para.read.nDataHistoryBF = 75 * 10 * para.serial.nByteInBlock; % n recent byte t
 para.detect.windowSize = 5;
 
 
+
 % --------------------------- heartbeat prediction --------------------------- %
 para.pred.tMinimal = 0.3;
 
@@ -23,8 +24,10 @@ para.pred.tMinimal = 0.3;
 % ============================================================================ %
 %                                  Calibration                                 %
 % ============================================================================ %
+para.calibration.sampleTime = 10;   % in second
+para.calibration.variationThreshold = 0.1;
 para.calibration.keyQuit = 'q';
-
+para.calibration.keyStart = 's';
 
 
 % ============================================================================ %
