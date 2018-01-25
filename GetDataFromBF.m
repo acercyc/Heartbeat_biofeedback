@@ -10,6 +10,7 @@ para = parameters();
 
 %% Read from buffer
 stream = fread(obj, para.read.nByteToReadFromBF);
+% fprintf('%d\n', length(stream));
 obj.UserData.lastRequestTime = GetSecs();
 
 stream = [obj.UserData.data; stream];

@@ -8,7 +8,7 @@ para.serial.nByteInBlock = 5;
 
 
 % ------------------------------- reading data ------------------------------- %
-para.read.nByteToReadFromBF = 25;
+para.read.nByteToReadFromBF = 75;
 para.read.nDataHistoryBF = 75 * 10 * para.serial.nByteInBlock; % n recent byte to keep
 
 
@@ -19,6 +19,7 @@ para.detect.windowSize = 5;
 
 % --------------------------- heartbeat prediction --------------------------- %
 para.pred.tMinimal = 0.3;
+para.pred.tMinimalHrRatio = 0.7;
 
 
 % ============================================================================ %
@@ -26,6 +27,8 @@ para.pred.tMinimal = 0.3;
 % ============================================================================ %
 para.calibration.sampleTime = 10;   % in second
 para.calibration.variationThreshold = 0.1;
+para.calibration.rangeRateThreshold = 0.87;
+para.calibration.nStableWaveSampleCriterium = 7;
 para.calibration.keyQuit = 'q';
 para.calibration.keyStart = 's';
 
@@ -42,6 +45,8 @@ para.design.nPulseInTrial = 10;
 para.design.asyncOffset = 0.5;    % in second
 para.design.asyncTrialRate = 0.5;
 para.design.isFeedbackShow = 1;
+para.design.HRmonitorMode = 0;     % 0: do nothing; 1:block based; 2:trial based
+
 
 para.stim.v.size = 50;  % in pixel
 para.stim.v.duration = 0.2;  % in seconds
@@ -52,7 +57,9 @@ para.stim.a.fs = 44100;
 
 para.resp.keySync = 'LeftArrow';
 para.resp.keyAsync = 'RightArrow';
-para.resp.keyNextTrial = 'DownArrow';
+para.resp.keyNextTrial = 'space';
+
+para.fix.tJitter = [1, 2];
 
 para.log.calibrationHR = NaN;
 para.log.trial.session = NaN;

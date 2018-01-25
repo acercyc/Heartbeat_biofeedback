@@ -14,8 +14,7 @@ classdef PsyText_Prompt < PsyText
 % 3.2 - Acer 2015/02/07 11:59
 %       Modify playRest_Block_pressKey
 %       Add playRest_Block_pressKey_autodetect
-% 4.0 - Acer 2018/01/25 18:14
-%       remove PsyResp inherent 
+% 4 - ver
 
     properties
         allowKey = [];

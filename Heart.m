@@ -50,7 +50,6 @@ classdef Heart < handle
         % ============================================================================ %
         %                                  Information                                 %
         % ============================================================================ %
-        
         function [hr, sd, pred, amp, t, peakInd] = cal_info(obj)
             hr = [];
             sd = [];
@@ -77,26 +76,17 @@ classdef Heart < handle
                 t = [];
             else
                 amp = [data.Pleth];            
-                t = calBackwardTiming(obj.s.UserData.lastRequestTime, length(amp), obj.para.device.fs);    
+                t = calBackwardTiming(obj.s.UserData.lastRequestTime,...
+                    length(amp), obj.para.device.fs);    
             end            
         end
         
         % ============================================================================ %
         %                                     Plot                                     %
         % ============================================================================ %
-        function plot(obj)        
-            while 1
-                [amp, t] = obj.extractAmpAndTime();
-                plot(t, amp);
-                drawnow(); 
-                
-                [keyIsDown, ~, keyCode] = KbCheck(); 
-                if keyIsDown
-                    if  strcmp('q', KbName(keyCode))
-                        break
-                    end
-                end
-            end            
+        function plot(obj)
+            [amp, t] = obj.extractAmpAndTime();
+            plot(t, amp);                    
         end
         
         
@@ -129,7 +119,6 @@ classdef Heart < handle
             title(txt);
 
             % draw
-            drawnow();                
             hold off 
             % ==================================== %
             isPlot = 1;                        

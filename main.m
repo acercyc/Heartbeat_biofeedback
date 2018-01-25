@@ -1,8 +1,9 @@
 clc
 clear all
 close all
-clear classes
 instrreset
+clear classes
+
 
 addpath(genpath('lib'));
 
@@ -43,7 +44,7 @@ isV = contains(design.modality, 'V');
 init = PsyInitialize();
 
 w = PsyScreen(1);
-w.openTest();
+w.openTest([1, 1, 600, 600]);
 
 
 
@@ -59,13 +60,18 @@ a.open();
 a.bufferLoading();
 
 
+%% fixation 
+fix = PsyCross(w);
+
 %% Message
 txt = PsyText(w);
 txt_prompt = PsyText_Prompt(w);
 
 %% Response
 
-
+%% Heart obj
+heart = Heart();
+heart.open();
 
 %% Start Experiment
 % ============================================================================ %
@@ -73,15 +79,27 @@ txt_prompt = PsyText_Prompt(w);
 % ============================================================================ %
 txt_prompt.playWelcome_and_prompt();
 
+
 % ============================================================================ %
 %                                  Calibration                                 %
+% ============================================================================ %   
+txt_prompt.text = 'Resting State Calibration\n\nPress Space to Continue';
+txt_prompt.allowKey = 'space';
+txt_prompt.playTextAndWaitForKey();
+hr_rest = Calibration(w, heart);
+
+
 % ============================================================================ %
-heart = Heart();
-heart.open();
-hr_mean = Calibration(w, heart);
+%                          Experiment Start Press key                          %
+% ============================================================================ %
+txt_prompt.text = 'Experiment Start\n\nPress Space to Continue';
+txt_prompt.allowKey = 'space';
+txt_prompt.playTextAndWaitForKey();
+WaitSecs(1);
 
 
 
+%%
 for iTrial = 1:10
     cPulse = 1;
     tNextHist = NaN(1, design.nPulseInTrial);
@@ -92,10 +110,29 @@ for iTrial = 1:10
         offset = design.asyncOffset;
     end
     
+    % ============================================================================ %
+    %                           Wait for stable heartbeat                          %
+    % ============================================================================ %
+    txt_prompt.text = 'Wait for heartbeat stabilized...';
+    txt_prompt.play();
+    WaitStableWave(heart, para);
+    
+    % ============================================================================ %
+    %                                   fixation                                   %
+    % ============================================================================ %
+    z = randRange(para.fix.tJitter);
+    fix.play();
+    WaitSecs(z);
+    
+    
+    % **************************************************************************** %
+    %                              Pulse presentation                              %
+    % **************************************************************************** %
     while cPulse <= design.nPulseInTrial
 
-        tNext = heart.nextPulse();
-        tNextHist = tNextHist_update(tNext, tNextHist, para.pred.tMinimal);
+        [hr, sd, tNext, amp, t, peakInd] = heart.cal_info();
+        tNextHist = tNextHist_update_byRatio(tNext, tNextHist, hr, para.pred.tMinimalHrRatio);
+
 
         % --------------------------------- Schedule --------------------------------- %
         % V
@@ -112,29 +149,24 @@ for iTrial = 1:10
 
 
         % ---------------------------- Wait to next pulse  --------------------------- %
-        while GetSecs() < (tNextHist(cPulse) + offset)
-            tNext = heart.nextPulse();
-            tNextHist = tNextHist_update(tNext, tNextHist, para.pred.tMinimal);        
-        end
+        tNextHist = WaitAndUpdateUntil(tNextHist(cPulse) + offset, heart, ...
+            tNextHist, para);
 
 
         % ---------------------- wait to visual stim disappear  ---------------------- %
 
         if isV
-            while GetSecs() < (tNextHist(cPulse) + stim.v.duration + offset)
-                tNext = heart.nextPulse();
-                tNextHist = tNextHist_update(tNext, tNextHist, para.pred.tMinimal);             
-            end
+            tNextHist = WaitAndUpdateUntil(tNextHist(cPulse) + stim.v.duration + offset, heart,...
+                tNextHist, para);
             v.flip();
         end
 
 
         % ---------------------- wait to auditory stim disappear --------------------- %
         if isA
-            while GetSecs() < (tNextHist(cPulse) + stim.a.duration + offset)
-                tNext = heart.nextPulse();
-                tNextHist = tNextHist_update(tNext, tNextHist, para.pred.tMinimal);             
-            end    
+            tNextHist = WaitAndUpdateUntil(tNextHist(cPulse) + stim.a.duration + offset, heart, ...
+                tNextHist, para);            
+            a.stop();
         end
 
         cPulse = cPulse + 1;
@@ -149,6 +181,7 @@ for iTrial = 1:10
     enablekeys = [KbName(resp.keySync) KbName(resp.keyAsync)];
     RestrictKeysForKbCheck(enablekeys);
     while 1
+        GetMouse();
         [keyIsDown,secs, keyCode] = KbCheck();
         if keyIsDown
             data(iTrial).resp = KbName(keyCode);
@@ -163,24 +196,35 @@ for iTrial = 1:10
     ansIsSync = strcmp(data(iTrial).resp, resp.keySync);
     data(iTrial).acc = ansIsSync == data(iTrial).isSync;
 
-    if data(iTrial).acc
-        txt.text = 'correct';
-    else
-        txt.text = 'wrong';
-    end
-    txt.play();
     
-    WaitSecs(1);
+    if design.isFeedbackShow
+        if data(iTrial).acc
+            txt.text = 'correct';
+        else
+            txt.text = 'wrong';
+        end
+        txt.play();
+        WaitSecs(1);
+    end
+    
+
     % ============================================================================ %
     %                            Response to next trial                            %
     % ============================================================================ %
     
     txt.draw();
-    txt.text = sprintf('\n\n\n\n\nPress %s key to the next trial', resp.keyNextTrial);
+    txt.text = sprintf('\n\n\n\n\nPress %s key to continue', resp.keyNextTrial);
     txt.play();
     RestrictKeysForKbCheck(KbName(resp.keyNextTrial));  
     while ~KbCheck()
+        GetMouse();
     end
+    
+    
+    % ============================================================================ %
+    %                                Mode selection                                %
+    % ============================================================================ %
+%     switch design    .
     
 
 end
