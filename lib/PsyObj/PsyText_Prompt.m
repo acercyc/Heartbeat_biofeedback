@@ -52,7 +52,7 @@ classdef PsyText_Prompt < PsyText
             RestrictKeysForKbCheck(KbName(obj.allowKey));
             obj.playCenter;
             KbPressWait();
-            RestrictKeysForKbCheck();
+            RestrictKeysForKbCheck([]);
             obj.flip();
         end
                         

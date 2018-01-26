@@ -46,6 +46,12 @@ classdef Heart < handle
         end
         
         
+        function delete(obj)
+            fclose(obj.s);
+            delete(obj.s);
+            instrreset();            
+        end
+        
         
         % ============================================================================ %
         %                                  Information                                 %

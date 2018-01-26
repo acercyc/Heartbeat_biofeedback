@@ -45,7 +45,8 @@ para.design.nPulseInTrial = 10;
 para.design.asyncOffset = 0.5;    % in second
 para.design.asyncTrialRate = 0.5;
 para.design.isFeedbackShow = 1;
-para.design.HRmonitorMode = 0;     % 0: do nothing; 1:block based; 2:trial based
+para.design.nTrialToCheckHR = 1;     % 0:
+para.design.startExpWithHighHR = 1;
 
 
 para.stim.v.size = 50;  % in pixel
@@ -61,10 +62,11 @@ para.resp.keyNextTrial = 'space';
 
 para.fix.tJitter = [1, 2];
 
-para.log.calibrationHR = NaN;
-para.log.trial.session = NaN;
+para.log.datapath = 'data';
+para.log.trial.hr_rest = NaN;
 para.log.trial.trial = NaN;
-para.log.trial.totalTime = NaN;
+para.log.trial.nPulseTotalTime = NaN;
+para.log.trial.nPulseAverageHR = NaN;
 para.log.trial.HR = NaN;
 para.log.trial.isSync = NaN;
 para.log.trial.resp = NaN;
