@@ -12,4 +12,6 @@ while cValid < para.calibration.nStableWaveSampleCriterium
     else
         cValid = 0;
     end   
+    
+    QuitPsych2('ESCAPE');
 end

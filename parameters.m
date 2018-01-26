@@ -5,10 +5,10 @@ function para = parameters()
 %                                     Task                                     %
 % ============================================================================ %
 
-% expeirment mode
+% ------------------------------ expeirment mode ----------------------------- %
 para.design.isFeedbackShow = 1;
-para.design.nTrialToCheckHR = 1;
-para.design.startExpWithHighHR = 1;
+para.design.nTrialToCheckHR = 0;
+para.design.startExpWithHighHR = 0;
 
 para.design.HRchangeRate = 1.1;
 para.design.nPulseInTrial = 10;

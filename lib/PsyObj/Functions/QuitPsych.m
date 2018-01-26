@@ -21,6 +21,6 @@ keyNum = unique(keyNum);
 [keyIsDown key_down_time keyCode] = KbCheck;
 keyPressNum = find(keyCode);
 
-if keyIsDown && all(ismember(keyNum, keyPressNum));
+if keyIsDown && all(ismember(keyNum, keyPressNum))
     error('abort program');
 end

@@ -1,10 +1,11 @@
 function main()
 % 1.0 - Acer 2018/01/26 15:08
-% clc
-% clear all
-% close all
-% instrreset
-% clear classes
+commandwindow();
+clc
+clear all
+close all
+instrreset
+clear classes
 
 
 addpath(genpath('lib'));
@@ -16,7 +17,6 @@ stim = para.stim;
 resp = para.resp;
 
 %% Logging 
-
 % --------- subject info GUI --------- %
 s = SubjInfObj();
 s.addField('Session');
@@ -51,6 +51,7 @@ for iTrial = 1:nTrial
     data(iTrial).iTrial = iTrial;
     data(iTrial).isSync = isSync(iTrial);
     data(iTrial).expStartTime = expStartTime;
+    data(iTrial).modality = design.modality;
 end
 
 % modality
@@ -63,7 +64,7 @@ init = PsyInitialize();
 init.SuppressAllWarnings = 1;
 w = PsyScreen(para.device.monitorID);
 
-if isempty(para.device.isOpenTestWindow)
+if isempty(para.device.testWindowSize)
     w.open();
 else
     w.openTest(para.device.testWindowSize);
@@ -103,7 +104,7 @@ txt_prompt.playWelcome_and_prompt();
 % ============================================================================ %
 %                                  Calibration                                 %
 % ============================================================================ %   
-txt_prompt.text = 'Resting State Calibration\n\nPress Space to Continue';
+txt_prompt.text = '--- Resting State Calibration ---\n\n\nPress Space to Continue';
 txt_prompt.allowKey = 'space';
 txt_prompt.playTextAndWaitForKey();
 hr_rest = Calibration(w, heart);
@@ -128,13 +129,12 @@ txt_prompt.playTextAndWaitForKey();
 WaitSecs(1);
 
 
-
-%%
-commandwindow();
+% ============================================================================ %
+%                                  Trial Loop                                  %
+% ============================================================================ %
 for iTrial = 1:4    
     cPulse = 1;
-    tNextHist = NaN(1, design.nPulseInTrial);
-    
+    tNextHist = NaN(1, design.nPulseInTrial);  
     if data(iTrial).isSync
         offset = 0;
     else
@@ -162,7 +162,7 @@ for iTrial = 1:4
     % **************************************************************************** %
     while cPulse <= design.nPulseInTrial
 
-        [hr, sd, tNext, amp, t, peakInd] = heart.cal_info();
+        [hr, ~, tNext, ~, ~, ~] = heart.cal_info();
         tNextHist = tNextHist_update_byRatio(tNext, tNextHist, hr, para.pred.tMinimalHrRatio);
 
 
@@ -260,10 +260,10 @@ for iTrial = 1:4
     %                                   Check HR                                   %
     % ============================================================================ %
     if (iTrial ~= nTrial) && (mod(iTrial, design.nTrialToCheckHR) == 0)
-        [hr, sd, tNext, amp, t, peakInd] = heart.cal_info();
+        [hr, ~, ~, ~, ~, ~] = heart.cal_info();
         if hr/hr_rest < design.HRchangeRate
             DoExerciseAndCheck(w, heart, hr_rest);
-        end        
+        end
     end
     
     
@@ -276,7 +276,7 @@ for iTrial = 1:4
     
     % Save to file
     Struct2File(datapath_CSV, data);
-    save(datapath_mat, 'data');
+    save(datapath_mat, 'data', 'para');
 end
 
 

@@ -4,4 +4,5 @@ function tNextHist = WaitAndUpdateUntil(toT, heart, tNextHist, para)
 while GetSecs() < toT
     [hr, ~, tNext, ~, ~, ~] = heart.cal_info();
     tNextHist = tNextHist_update_byRatio(tNext, tNextHist, hr, para.pred.tMinimalHrRatio);
+    QuitPsych2('ESCAPE');
 end

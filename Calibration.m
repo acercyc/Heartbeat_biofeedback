@@ -29,7 +29,7 @@ while 1
                 if length(peakInd) < 2
                     txt.text = 'Waiting...';
                 else
-                    instText = ['Calibration mode\n\n', ...
+                    instText = ['Calibration mode\n\n\n', ...
                                 's: Start estimate heart rate\n\n', ...
                                 'q: Quit calibration mode', ...
                                 '\n\n\n'];
@@ -52,7 +52,9 @@ while 1
 
                     end
                     KbReleaseWait();
-                end    
+                end
+                
+                QuitPsych2('ESCAPE');
             end
             
         % ============================================================================ %
@@ -88,6 +90,8 @@ while 1
                     end
                     KbReleaseWait();
                 end
+                
+                QuitPsych2('ESCAPE');
             end
             
             % compute final heartbeat average
@@ -122,6 +126,8 @@ while 1
                     end
                     KbReleaseWait();
                 end
+                
+                QuitPsych2('ESCAPE');
             end
             
         % ============================================================================ %

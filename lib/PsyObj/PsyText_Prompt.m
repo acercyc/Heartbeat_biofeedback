@@ -48,12 +48,13 @@ classdef PsyText_Prompt < PsyText
             obj.playTextAndWaitForKey();
         end
         
-        function playTextAndWaitForKey(obj)
+        function [secs, keyCode, deltaSecs] = playTextAndWaitForKey(obj)
             RestrictKeysForKbCheck(KbName(obj.allowKey));
             obj.playCenter;
-            KbPressWait();
+            [secs, keyCode, deltaSecs] = KbPressWait();
             RestrictKeysForKbCheck([]);
             obj.flip();
+            QuitPsych2('ESCAPE');
         end
                         
         

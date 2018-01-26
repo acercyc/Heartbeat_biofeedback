@@ -28,9 +28,8 @@ while GetSecs() < t0 + calibration.sampleTime
     if keyIsDown
         if strcmp(KbName(keyCode), 'q')
             KbReleaseWait();
-            break
-        end
-        
+            break           
+        end        
     end
 end
 
