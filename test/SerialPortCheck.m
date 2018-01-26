@@ -1,4 +1,4 @@
-kfunction [keyIsDown, secs, keyCode] = SerialPortCheck(s)
+function [keyIsDown, secs, keyCode] = SerialPortCheck(s)
 
 secs = GetSecs();
 if s.bytesavailable > 1

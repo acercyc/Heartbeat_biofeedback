@@ -62,6 +62,7 @@ isV = ~isempty(strfind(design.modality, 'V'));
 %% Initialise 
 init = PsyInitialize();
 init.SuppressAllWarnings = 1;
+init.SkipSyncTests();
 w = PsyScreen(para.device.monitorID);
 
 if isempty(para.device.testWindowSize)

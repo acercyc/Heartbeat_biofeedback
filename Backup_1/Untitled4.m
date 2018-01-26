@@ -1,5 +1,6 @@
 clear all
 clear classes
+close all
 clc
 instrreset
 
@@ -7,7 +8,7 @@ instrreset
 % dd = dd.push(1:4);
 % dd = dd.push(1:7);
 % dd.data
-heart = Heart
+heart = Heart;
 
 
 
@@ -15,10 +16,13 @@ heart = Heart
 
 heart.open();
 
+figure()
+
+%%
 p = [];
 while 1
     heart.plot2();
-    p = [p heart.nextPulse()];
+    drawnow();         
 end
 
 
