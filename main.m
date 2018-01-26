@@ -55,8 +55,8 @@ for iTrial = 1:nTrial
 end
 
 % modality
-isA = contains(design.modality, 'A');
-isV = contains(design.modality, 'V');
+isA = ~isempty(strfind(design.modality, 'A'));
+isV = ~isempty(strfind(design.modality, 'V'));
 
 
 %% Initialise 
