@@ -4,40 +4,30 @@ function para = parameters()
 % ============================================================================ %
 %                                     Task                                     %
 % ============================================================================ %
-
-% expeirment mode
-para.design.isFeedbackShow = 1;
-para.design.nTrialToCheckHR = 1;
-para.design.startExpWithHighHR = 1;
-
 para.design.HRchangeRate = 1.1;
-para.design.nPulseInTrial = 10;
 para.design.nTrialInBlock = 20;
 para.design.nBlockInSession = 4;
 para.design.modality = 'AV';    % 'A', 'V', or 'AV'
+para.design.nPulseInTrial = 10;
 para.design.asyncOffset = 0.5;    % in second
 para.design.asyncTrialRate = 0.5;
+para.design.isFeedbackShow = 1;
+para.design.nTrialToCheckHR = 1;     % 0:
+para.design.startExpWithHighHR = 1;
 
 
-% ---------------------------------- Stimuli --------------------------------- %
-% visual 
 para.stim.v.size = 50;  % in pixel
 para.stim.v.duration = 0.2;  % in seconds
 
-% auditory
 para.stim.a.freq = 1000;
 para.stim.a.duration = 0.2;
 para.stim.a.fs = 44100;
 
-% intertrial central stimulus 
-para.fix.tJitter = [1, 2];
-
-% Response
 para.resp.keySync = 'LeftArrow';
 para.resp.keyAsync = 'RightArrow';
 para.resp.keyNextTrial = 'space';
 
-
+para.fix.tJitter = [1, 2];
 
 
 % ============================================================================ %
@@ -56,13 +46,11 @@ para.calibration.keyStart = 's';
 % ============================================================================ %
 % ---------------------------------- device ---------------------------------- %
 para.device.fs = 75;
-para.device.monitorID = 1;
-para.device.testWindowSize = [];
 
 % -------------------------------- serial port ------------------------------- %
 para.serial.nByteInBlock = 5;
 para.serial.COM = 'COM3';
-para.serial.BaudRate = 9600;
+para.se
 
 
 % ------------------------------- reading data ------------------------------- %
@@ -86,7 +74,7 @@ para.pred.tMinimalHrRatio = 0.7;
 % ============================================================================ %
 para.log.datapath = 'data';
 para.log.trial.hr_rest = NaN;
-para.log.trial.iTrial = NaN;
+para.log.trial.trial = NaN;
 para.log.trial.nPulseTotalTime = NaN;
 para.log.trial.nPulseAverageHR = NaN;
 para.log.trial.HR = NaN;

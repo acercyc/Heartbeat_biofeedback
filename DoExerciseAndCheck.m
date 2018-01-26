@@ -11,7 +11,7 @@ txt_prompt = PsyText_Prompt(w);
         txt_prompt.playTextAndWaitForKey();
         
         % wait for stable HR
-        txt_prompt.text = 'Wait for heartbeat stabilized...';
+        txt_prompt.text = 'Wait for heartbeat signal stabilized...';
         txt_prompt.play();
         WaitStableWave(heart, para);
 

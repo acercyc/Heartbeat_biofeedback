@@ -27,7 +27,7 @@ classdef Heart < handle
             % ==================================== %
             % define serial port obj
             % ==================================== %
-            obj.s = serial('COM3', 'BaudRate', 9600);
+            obj.s = serial(obj.para.serial.COM, 'BaudRate', obj.para.serial.BaudRate);
             obj.s.BytesAvailableFcn = @GetDataFromBF;
             obj.s.BytesAvailableFcnCount = obj.para.read.nByteToReadFromBF;
             obj.s.BytesAvailableFcnMode = 'byte';

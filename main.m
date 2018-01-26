@@ -1,15 +1,16 @@
+function main()
 % 1.0 - Acer 2018/01/26 15:08
-clc
-clear all
-close all
-instrreset
-clear classes
+% clc
+% clear all
+% close all
+% instrreset
+% clear classes
 
 
 addpath(genpath('lib'));
 
 %% Load parameters
-para = parameters;
+para = parameters();
 design = para.design; 
 stim = para.stim;
 resp = para.resp;
@@ -29,7 +30,7 @@ if ~exist(datapath, 'dir')
     mkdir(datapath);
 end  
 datapath_mat = fullfile(datapath, sprintf('%s_%s.mat', s.SubjectID, s.Session));
-datapath_CSV = fullfile(datapath, sprintf('%s_%s.csv', s.SubjectID, s.Session));
+datapath_CSV = fullfile(datapath, sprintf('%s_%s.csv', s.SubjectID , s.Session));
 
 
 %% Design
@@ -60,9 +61,14 @@ isV = contains(design.modality, 'V');
 %% Initialise 
 init = PsyInitialize();
 init.SuppressAllWarnings = 1;
+w = PsyScreen(para.device.monitorID);
 
-w = PsyScreen(1);
-w.openTest([1, 1, 600, 600]);
+if isempty(para.device.isOpenTestWindow)
+    w.open();
+else
+    w.openTest(para.device.testWindowSize);
+end
+
 
 
 %% visual stim
@@ -76,10 +82,6 @@ a = PsySound();
 a.soundArray = beep;
 a.open();
 a.bufferLoading();
-
-
-%% fixation 
-fix = PsyCross(w);
 
 
 %% Message
@@ -128,6 +130,7 @@ WaitSecs(1);
 
 
 %%
+commandwindow();
 for iTrial = 1:4    
     cPulse = 1;
     tNextHist = NaN(1, design.nPulseInTrial);
@@ -141,7 +144,7 @@ for iTrial = 1:4
     % ============================================================================ %
     %                           Wait for stable heartbeat                          %
     % ============================================================================ %
-    txt_prompt.text = 'Wait for heartbeat stabilized...';
+    txt_prompt.text = 'Wait for heartbeat signal stabilized...';
     txt_prompt.play();
     WaitStableWave(heart, para);
     
@@ -267,26 +270,26 @@ for iTrial = 1:4
     % ============================================================================ %
     %                                 Data logging                                 %
     % ============================================================================ %
-    data(trial).hr_rest = hr_rest;
-    data(trial).nPulseTotalTime = tNextHist(end) - tNextHist(1);
-    data(trial).nPulseAverageHR = data(trial).nPulseTotalTime / length(tNextHist);
+    data(iTrial).hr_rest = hr_rest;
+    data(iTrial).nPulseTotalTime = tNextHist(end) - tNextHist(1);
+    data(iTrial).nPulseAverageHR = data(iTrial).nPulseTotalTime / length(tNextHist);
     
     % Save to file
     Struct2File(datapath_CSV, data);
-    save(datapath_mat, 'data');h
+    save(datapath_mat, 'data');
 end
 
 
 % **************************************************************************** %
 %                               Finish Experiment                              %
 % **************************************************************************** %
-session_acc = mean([data(trial).acc]);
-session_RT = mean([data(trial).RT]);
+session_acc = mean([data(iTrial).acc]);
+session_RT = mean([data(iTrial).RT]);
 str_final = sprintf(['The end of this session\n\n',...
-    'Your accuracy is %.1f, and response time is %.1f\n\n\',...
-    'Press space to exit'],...
-    session_acc, session_RT);
-
+    'Your accuracy is %.1f, and response time is %.1fms',...
+    '\n\n\nPress space to end the program'],...
+    session_acc*100, session_RT*1000);
+txt_prompt.text = str_final;
 txt_prompt.allowKey = 'space';
 txt_prompt.playTextAndWaitForKey();
 
