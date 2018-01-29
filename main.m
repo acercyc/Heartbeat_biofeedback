@@ -1,5 +1,6 @@
 function main()
 % 1.0 - Acer 2018/01/26 15:08
+addpath(genpath('lib'));
 commandwindow();
 clc
 clear all
@@ -8,7 +9,7 @@ instrreset
 clear classes
 
 
-addpath(genpath('lib'));
+
 
 %% Load parameters
 para = parameters();
@@ -62,7 +63,9 @@ isV = ~isempty(strfind(design.modality, 'V'));
 %% Initialise 
 init = PsyInitialize();
 init.SuppressAllWarnings = 1;
-init.SkipSyncTests();
+init.SkipSyncTests = 1;
+Screen('Preference','VisualDebugLevel', 0);
+
 w = PsyScreen(para.device.monitorID);
 
 if isempty(para.device.testWindowSize)
@@ -133,7 +136,7 @@ WaitSecs(1);
 % ============================================================================ %
 %                                  Trial Loop                                  %
 % ============================================================================ %
-for iTrial = 1:4    
+for iTrial = 1:nTrial
     cPulse = 1;
     tNextHist = NaN(1, design.nPulseInTrial);  
     if data(iTrial).isSync

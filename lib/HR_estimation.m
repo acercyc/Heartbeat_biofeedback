@@ -19,7 +19,9 @@ while GetSecs() < t0 + calibration.sampleTime
     end   
 
     % show the current state
-    s = sprintf('Estimate...\t%.1fs/%gs', GetSecs()-t0, calibration.sampleTime);
+    s = sprintf(['Estimate...\t%.1fs/%gs',...
+                '\n\n\n',...
+                'Press Q to interrupt'], GetSecs()-t0, calibration.sampleTime);
     txt.text = s;
     txt.play();
 

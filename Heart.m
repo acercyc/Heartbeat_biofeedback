@@ -109,16 +109,18 @@ classdef Heart < handle
                  
 
             % =============== Plot =============== %
+            tNow = GetSecs();
             % waveform 
-            plot(t, amp);
+            plot(t-tNow, amp);
+            xlabel('time');
             hold on
 
             % Peak points                               
-            plot(t(peakInd), amp(peakInd), 'o');
+            plot(t(peakInd)-tNow, amp(peakInd), 'or');
 
             % prediction 
             vRange = [min(amp), max(amp)];
-            plot([pred, pred], vRange, 'r');                
+            plot([pred, pred]-tNow, vRange, 'r');                
 
             % text
             txt = sprintf('HR: %.1f; SD: %.2f', hr, sd);

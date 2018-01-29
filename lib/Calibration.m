@@ -24,6 +24,7 @@ while 1
         %                                   Show info                                  %
         % ============================================================================ %        
         case 'showInfo'
+            KbReleaseWait();
             while 1
                 [hr, sd, ~, ~, ~, peakInd] = heart.cal_info();
                 if length(peakInd) < 2
@@ -51,7 +52,7 @@ while 1
                             break
 
                     end
-                    KbReleaseWait();
+                    
                 end
                 
                 QuitPsych2('ESCAPE');
@@ -61,6 +62,7 @@ while 1
         %                                 HR Estimation                                %
         % ============================================================================ %            
         case 'HR_estimation'
+            KbReleaseWait();
             hr_hist = [];
             hr_mean = 0;
             
@@ -103,6 +105,7 @@ while 1
             % ---------------------------------------------------------------------------- %
             % show result 
             % ---------------------------------------------------------------------------- %
+            KbReleaseWait();
             instText = ['w: Go back to welcome screen\n\n', ...
                         's: Start estimate heart rate again\n\n', ...
                         'q: Quit calibration mode'];        
@@ -111,7 +114,7 @@ while 1
             txt.play();
             
             while 1
-                [keyIsDown, secs, keyCode] = KbCheck();
+                [keyIsDown, ~, keyCode] = KbCheck();
                 if keyIsDown
                     switch KbName(keyCode)
                         case 'w'
@@ -123,12 +126,12 @@ while 1
                         case 'q'
                             iMode = 'quit';
                             break
-                    end
-                    KbReleaseWait();
+                    end                    
                 end
                 
                 QuitPsych2('ESCAPE');
             end
+            KbReleaseWait();
             
         % ============================================================================ %
         %                                     Quit                                     %
