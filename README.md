@@ -1,3 +1,5 @@
+*1.0 - Acer 2018/01/29 18:39*
+
 Heartbeat_biofeedback
 
 # Execute the program
