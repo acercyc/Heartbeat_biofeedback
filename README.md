@@ -2,6 +2,11 @@
 
 Heartbeat_biofeedback
 
+# Install
+
+1. Install driver from CD or use files/NONIN.iso
+2. Install Psychtoolbox from http://psychtoolbox.org/download/
+
 # Execute the program
 
 1. Run "main.m" from Matlab to start the program
