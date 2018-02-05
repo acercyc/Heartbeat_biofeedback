@@ -28,7 +28,7 @@ classdef PsyText_Prompt < PsyText
         
         
         function playWelcome_and_prompt(obj)
-            obj.text = sprintf('Welcome to this experiment\n\nPress SPACE to start');
+            obj.text = sprintf();
             obj.allowKey = 'space';
             obj.playTextAndWaitForKey();
         end

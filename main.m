@@ -16,6 +16,7 @@ para = parameters();
 design = para.design; 
 stim = para.stim;
 resp = para.resp;
+msg = para.msg;
 
 %% Logging 
 % --------- subject info GUI --------- %
@@ -102,13 +103,14 @@ heart.open();
 % ============================================================================ %
 %                                    Welcome                                   %
 % ============================================================================ %
-txt_prompt.playWelcome_and_prompt();
-
+txt_prompt.text = msg.Welcome;
+txt_prompt.allowKey = 'space';
+txt_prompt.playTextAndWaitForKey();
 
 % ============================================================================ %
 %                                  Calibration                                 %
 % ============================================================================ %   
-txt_prompt.text = '--- Resting State Calibration ---\n\n\nPress Space to Continue';
+txt_prompt.text = msg.RestingCalibrationStart;
 txt_prompt.allowKey = 'space';
 txt_prompt.playTextAndWaitForKey();
 hr_rest = Calibration(w, heart);
@@ -127,7 +129,7 @@ end
 % ============================================================================ %
 %                          Experiment Start Press key                          %
 % ============================================================================ %
-txt_prompt.text = 'Experiment Start\n\nPress Space to Continue';
+txt_prompt.text = msg.ExpStart;
 txt_prompt.allowKey = 'space';
 txt_prompt.playTextAndWaitForKey();
 WaitSecs(1);
@@ -148,7 +150,7 @@ for iTrial = 1:nTrial
     % ============================================================================ %
     %                           Wait for stable heartbeat                          %
     % ============================================================================ %
-    txt_prompt.text = 'Wait for heartbeat signal stabilized...';
+    txt_prompt.text = para.msg.WaitStableSignal;
     txt_prompt.play();
     WaitStableWave(heart, para);
     
@@ -212,7 +214,7 @@ for iTrial = 1:nTrial
     % ============================================================================ %
     %                                   Response                                   %
     % ============================================================================ %
-    txt.text = 'Sync  or  Async';
+    txt.text = msg.RespChoice;
     txt.play();
     tResp = GetSecs();
     
@@ -237,9 +239,9 @@ for iTrial = 1:nTrial
     
     if design.isFeedbackShow
         if data(iTrial).acc
-            txt.text = 'correct';
+            txt.text = msg.FeedbackCorrect;
         else
-            txt.text = 'wrong';
+            txt.text = msg.FeedbackWrong;
         end
         txt.play();
         WaitSecs(1);
@@ -251,7 +253,7 @@ for iTrial = 1:nTrial
     % ============================================================================ %
     
     txt.draw();
-    txt.text = sprintf('\n\n\n\n\nPress %s key to continue', resp.keyNextTrial);
+    txt.text = sprintf(msg.RespToNextTrial, resp.keyNextTrial);
     txt.play();
     RestrictKeysForKbCheck(KbName(resp.keyNextTrial));  
     while ~KbCheck()
@@ -289,10 +291,7 @@ end
 % **************************************************************************** %
 session_acc = mean([data(iTrial).acc]);
 session_RT = mean([data(iTrial).RT]);
-str_final = sprintf(['The end of this session\n\n',...
-    'Your accuracy is %.1f, and response time is %.1fms',...
-    '\n\n\nPress space to end the program'],...
-    session_acc*100, session_RT*1000);
+str_final = sprintf(msg.EndOfExp, session_acc*100, session_RT*1000);
 txt_prompt.text = str_final;
 txt_prompt.allowKey = 'space';
 txt_prompt.playTextAndWaitForKey();

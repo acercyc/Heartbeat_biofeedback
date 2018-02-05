@@ -5,6 +5,7 @@ function hr_mean = Calibration(w, heart)
 % parameters
 para = parameters();
 calibration = para.calibration;
+msg = para.msg;
 
 % Message obj
 txt = PsyText(w);
@@ -30,10 +31,7 @@ while 1
                 if length(peakInd) < 2
                     txt.text = 'Waiting...';
                 else
-                    instText = ['Calibration mode\n\n\n', ...
-                                's: Start estimate heart rate\n\n', ...
-                                'q: Quit calibration mode', ...
-                                '\n\n\n'];
+                    instText = msg.CaliStartScreen;
                     s = sprintf('Heart rate: %.1f\n\nVariation: %.3f', hr, sd);
                     txt.text = [instText, s];        
                 end
@@ -76,9 +74,7 @@ while 1
                 end   
                 
                 % show the current state
-                s = sprintf(['Estimate...\t%.1fs/%gs',...
-                             '\n\n\n',...
-                             'Press Q to interrupt'], GetSecs()-t0, calibration.sampleTime);
+                s = sprintf(msg.CaliEstimating, GetSecs()-t0, calibration.sampleTime);
                 txt.text = s;
                 txt.play();
                 
@@ -106,10 +102,8 @@ while 1
             % show result 
             % ---------------------------------------------------------------------------- %
             KbReleaseWait();
-            instText = ['w: Go back to welcome screen\n\n', ...
-                        's: Start estimate heart rate again\n\n', ...
-                        'q: Quit calibration mode'];        
-            s = sprintf('Average Heart Rate = %.1f\n\n\n', hr_mean);
+            instText = msg.CaliChoice;        
+            s = sprintf(msg.CaliResult, hr_mean);
             txt.text = [s, instText];
             txt.play();
             
