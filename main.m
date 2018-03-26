@@ -152,7 +152,7 @@ for iTrial = 1:nTrial
     % ============================================================================ %
     txt_prompt.text = para.msg.WaitStableSignal;
     txt_prompt.play();
-    WaitStableWave(heart, para);
+    WaitStableWave(heart, para, w);
     
     % ============================================================================ %
     %                                   fixation                                   %
@@ -160,16 +160,57 @@ for iTrial = 1:nTrial
     z = randRange(para.fix.tJitter);
     txt.text = sprintf('Trial %d', iTrial);
     txt.play();
+    
     WaitSecs(z);
     
+    
+    % ============================================================================ %
+    %                          Predictive function warmup                          %
+    % ============================================================================ %
+    nWarmup = 3;
+    warmupHist = NaN(1, nWarmup);
+    [~, ~, tNext, ~, ~, ~] = heart.cal_info();
+    warmupHist(1) = tNext;
+    while sum(~isnan(warmupHist)) == 0
+        [hr, ~, tNext, ~, ~, ~] = heart.cal_info();
+        warmupHist = tNextHist_update_byRatio(tNext, warmupHist, hr, para.pred.tMinimalHrRatio);
+    end
+    tNextHist(1) = tNext;
     
     % **************************************************************************** %
     %                              Pulse presentation                              %
     % **************************************************************************** %
+    tt0 = GetSecs(); % test
+    
     while cPulse <= design.nPulseInTrial
+%         tNextHist_nLast = sum(~isnan(tNextHist));
+        
+        if cPulse ~= 1
+            [hr, ~, tNext, ~, ~, ~] = heart.cal_info();        
+            tNextHist = tNextHist_update_byRatio(tNext, tNextHist, hr, para.pred.tMinimalHrRatio);
+        end
+        
+        
+        if isnan(tNextHist(cPulse))
+            continue
+        end
+        
+%         if tNextHist_nLast == sum(~isnan(tNextHist))
+%             continue
+%         end
+        
+        % test
+%         fprintf('next: %.5f', tNextHist);
 
-        [hr, ~, tNext, ~, ~, ~] = heart.cal_info();
-        tNextHist = tNextHist_update_byRatio(tNext, tNextHist, hr, para.pred.tMinimalHrRatio);
+        % test
+%         heart.plot2();
+%         drawnow();
+        % test 
+        
+        offset
+        tNext - tt0
+        diff(tNextHist)
+        % test end
 
 
         % --------------------------------- Schedule --------------------------------- %
@@ -202,7 +243,7 @@ for iTrial = 1:nTrial
 
         % ---------------------- wait to auditory stim disappear --------------------- %
         if isA
-            tNextHist = WaitAndUpdateUntil(tNextHist(cPulse) + stim.a.duration + offset, heart, ...
+            tNextHist = WaitAndUpdateUntil(tNextHist(cPulse) + stim.a.duration + offset + 0.05, heart, ...
                 tNextHist, para);            
             a.stop();
         end

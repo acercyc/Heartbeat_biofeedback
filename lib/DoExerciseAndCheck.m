@@ -14,7 +14,7 @@ txt_prompt = PsyText_Prompt(w);
         % wait for stable HR
         txt_prompt.text = msg.ExciWait;
         txt_prompt.play();
-        WaitStableWave(heart, para);
+        WaitStableWave(heart, para, w);
 
         % start measure
         hr_mean = HR_estimation(w, heart);        

@@ -123,7 +123,7 @@ classdef Heart < handle
             plot([pred, pred]-tNow, vRange, 'r');                
 
             % text
-            txt = sprintf('HR: %.1f; SD: %.2f', hr, sd);
+            txt = sprintf('HR: %.1f; SD: %.3f', hr, sd);
             title(txt);
 
             % draw
