@@ -15,9 +15,12 @@ classdef PsyText < PsyDraw
 % 2.3 - Acer 2015/02/02 18:42
 %       modify function drawCenter to make the it can draw at any arbitrary center. 
 
+% Acer 2018/03/27 16:26
+%       Adapt to heartbeat task
+
     properties
         text = 'Test Words';
-        textFont = [];
+        textFont = 'Microsoft YaHei';
         textSize = [];
         textStyle = []; % 0=normal,1=bold,2=italic,4=underline,8=outline,32=condense,64=extend
         center = []
@@ -32,19 +35,20 @@ classdef PsyText < PsyDraw
         function obj = PsyText(winObj)
             obj = obj@PsyDraw(winObj);
             obj.center = [winObj.xcenter winObj.ycenter];
-            obj.textFont = Screen('Preference', 'DefaultFontName');
+            Screen('TextFont', obj.winObj.windowPtr, obj.textFont);            
             obj.textSize = Screen('Preference', 'DefaultFontSize');
             obj.textStyle = Screen('Preference', 'DefaultFontStyle');
         end
         
         
         function [nx, ny, textbounds] = drawCenter(obj, text, centerAt)
-            % Acer - 2015/02/02 18:41
-            
+            % Acer - 2015/02/02 18:41                        
             if exist('text', 'var'); obj.text = text; end
+            obj.text = double(native2unicode(obj.text, 'Shift_JIS'));
+            
             if exist('centerAt', 'var')
-                wOff = obj.winObj.addOffScreen;                
-                Screen('TextStyle', wOff, obj.textStyle);            
+                wOff = obj.winObj.addOffScreen;
+                Screen('TextStyle', wOff, obj.textStyle);     
                 Screen('TextFont', wOff, obj.textFont);
                 Screen('TextSize', wOff, obj.textSize);
                 bounds = TextBounds_unicode(wOff, obj.text);
@@ -56,6 +60,7 @@ classdef PsyText < PsyDraw
                 nx = [];
                 ny = [];
             else
+                Screen('TextFont', obj.winObj.windowPtr, obj.textFont);
                 [nx, ny, textbounds] = DrawFormattedText(obj.winObj.windowPtr,...
                     obj.text,'center','center',...
                     obj.color,...

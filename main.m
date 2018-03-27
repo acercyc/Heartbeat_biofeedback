@@ -34,6 +34,8 @@ end
 datapath_mat = fullfile(datapath, sprintf('%s_%s.mat', s.SubjectID, s.Session));
 datapath_CSV = fullfile(datapath, sprintf('%s_%s.csv', s.SubjectID , s.Session));
 
+datapath_mat = addFileSeries(datapath_mat);
+datapath_CSV = addFileSeries(datapath_CSV);
 
 %% Design
 nTrial = design.nBlockInSession * design.nTrialInBlock;
@@ -76,7 +78,6 @@ else
 end
 
 
-
 %% visual stim
 v = PsyOval(w);
 v.size = [stim.v.size, stim.v.size];
@@ -106,6 +107,7 @@ heart.open();
 txt_prompt.text = msg.Welcome;
 txt_prompt.allowKey = 'space';
 txt_prompt.playTextAndWaitForKey();
+
 
 % ============================================================================ %
 %                                  Calibration                                 %
@@ -322,7 +324,7 @@ for iTrial = 1:nTrial
     data(iTrial).nPulseAverageHR = data(iTrial).nPulseTotalTime / length(tNextHist);
     
     % Save to file
-    Struct2File(datapath_CSV, data);
+    Struct2File(datapath_CSV, data, '\t');
     save(datapath_mat, 'data', 'para');
 end
 
@@ -330,8 +332,8 @@ end
 % **************************************************************************** %
 %                               Finish Experiment                              %
 % **************************************************************************** %
-session_acc = mean([data(iTrial).acc]);
-session_RT = mean([data(iTrial).RT]);
+session_acc = mean([data.acc]);
+session_RT = mean([data.RT]);
 str_final = sprintf(msg.EndOfExp, session_acc*100, session_RT*1000);
 txt_prompt.text = str_final;
 txt_prompt.allowKey = 'space';

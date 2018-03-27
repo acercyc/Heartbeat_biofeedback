@@ -1,5 +1,6 @@
 function para = parameters()
 % 1.0 - Acer 2018/01/29 12:25
+% 1.1 - Acer 2018/03/27 17:48
 
 
 % ============================================================================ %
@@ -56,6 +57,7 @@ para.resp.keyNextTrial = 'space';       % response key based on KbName in Psycht
 % Caution!!! %s, %f determine presented values of variables. Don't delete them. 
 
 para.msg.Welcome = 'Welcome to this experiment\n\nPress SPACE to start';
+
 para.msg.RestingCalibrationStart = '--- Resting State Calibration ---\n\n\nPress Space to Continue';
 para.msg.ExpStart = 'Experiment Start\n\nPress Space to Continue';
 para.msg.WaitStableSignal = 'Wait for heartbeat signal stabilized...';
@@ -64,7 +66,7 @@ para.msg.FeedbackCorrect = 'correct';
 para.msg.FeedbackWrong = 'wrong';
 para.msg.RespToNextTrial = '\n\n\n\n\nPress %s key to continue';
 para.msg.EndOfExp = ['The end of this session\n\n',...
-                     'Your accuracy is %.1f, and response time is %.1fms',...
+                     'Your accuracy is %.1f%%, and response time is %.1fms',...
                      '\n\n\nPress space to end the program'];
 
 % -------------------------------- Calibration ------------------------------- %
@@ -114,7 +116,7 @@ para.calibration.nStableWaveSampleCriterium = 7;     % n stable sample to wait f
 %                                  Equipment                                   %
 % ============================================================================ %
 % ---------------------------------- device ---------------------------------- %
-para.device.monitorID      = 1;   % presentation monitor ID
+para.device.monitorID      = 0;   % presentation monitor ID
 para.device.testWindowSize = [0, 0, 500, 500];  % if not empty, open a testing window
 para.device.fs             = 75;  % in HZ
 
