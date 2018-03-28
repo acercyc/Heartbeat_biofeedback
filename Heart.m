@@ -70,7 +70,7 @@ classdef Heart < handle
             peakTime = t(peakInd);
             hr = obj.f_HR(peakTime);
             sd = std(diff(peakTime));
-            pred = obj.f_pred(peakTime, 1);            
+            pred = obj.f_pred(peakTime, 1);
         end
         
         function [amp, t] = extractAmpAndTime(obj)

@@ -15,8 +15,23 @@ heart.open();
 
 
 %% plot 
-figure()
+RestrictKeysForKbCheck(KbName('q'));
+disp('Press q to quit');
+
+figure();
 while 1
     heart.plot2();
-    drawnow();         
+    drawnow();
+    
+       
+    if KbCheck()
+        break
+    end
+    
 end
+
+RestrictKeysForKbCheck([]);
+
+
+%% close
+heart.close();

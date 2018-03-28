@@ -34,12 +34,13 @@ para.design.asyncTrialRate  = 0.5;   % ration of asyncrony trials in all trials
 % ---------------------------------- Stimuli --------------------------------- %
 % visual 
 para.stim.v.size     = 50;   % size of visual stimulus (in pixel)
-para.stim.v.duration = 0.2;  % duration of visual stimuli in seconds
+para.stim.v.duration = 0.15;  % duration of visual stimuli in seconds
 
 % auditory
 para.stim.a.freq     = 1000;   % the frequency of auditory tone
-para.stim.a.duration = 0.2;    % duration of auditory stimulus
+para.stim.a.duration = 0.15;    % duration of auditory stimulus
 para.stim.a.fs       = 44100;  % the playback frequency of auditory stimulus
+para.stim.a.fadeTime = 0.04;
 
 % intertrial central stimulus 
 para.fix.tJitter = [1, 2];  % random interval between trial [min, max] (in second)
@@ -106,7 +107,7 @@ para.calibration.keyQuit    = 'q';  % key to quit Calibration mode
 para.calibration.keyStart   = 's';  % key to start HR sampling
 
 % ------------------------ Good signal check parameter ----------------------- %
-para.calibration.variationThreshold         = 0.1;   
+para.calibration.variationThreshold         = 0.07;   
 para.calibration.rangeRateThreshold         = 0.87;  
 para.calibration.nStableWaveSampleCriterium = 7;     % n stable sample to wait for enter next stage
 
@@ -149,7 +150,7 @@ para.log.trial.hr_rest = NaN;
 para.log.trial.iTrial = NaN;
 para.log.trial.nPulseTotalTime = NaN;
 para.log.trial.nPulseAverageHR = NaN;
-para.log.trial.HR = NaN;
+% para.log.trial.HR = NaN;
 para.log.trial.isSync = NaN;
 para.log.trial.resp = NaN;
 para.log.trial.acc = NaN;

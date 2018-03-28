@@ -32,7 +32,7 @@ s.gui();
 datapath  = para.log.datapath;
 if ~exist(datapath, 'dir')
     mkdir(datapath);
-end  
+end   
 datapath_mat = fullfile(datapath, sprintf('%s_%s.mat', s.SubjectID, s.Session));
 datapath_CSV = fullfile(datapath, sprintf('%s_%s.csv', s.SubjectID , s.Session));
 
@@ -87,6 +87,7 @@ v.size = [stim.v.size, stim.v.size];
 
 %% auditory stim
 beep = MakeBeep(stim.a.freq, stim.a.duration, stim.a.fs);
+beep = SoundFade(beep, stim.a.freq, stim.a.fadeTime);
 a = PsySound();
 a.soundArray = beep;
 a.open();
@@ -168,6 +169,7 @@ for iTrial = 1:nTrial
     WaitSecs(z);
     
     
+    
     % ============================================================================ %
     %                          Predictive function warmup                          %
     % ============================================================================ %
@@ -185,7 +187,6 @@ for iTrial = 1:nTrial
     %                              Pulse presentation                              %
     % **************************************************************************** %    
     while cPulse <= design.nPulseInTrial
-        
         if cPulse ~= 1  % warm up
             [~, ~, tNext, ~, ~, ~] = heart.cal_info();
             tNextHist = tNextHist_update(tNext, tNextHist, para.pred.tMinimal);
@@ -207,6 +208,7 @@ for iTrial = 1:nTrial
 
         % A
         if isA
+            a.stop();
             a.playAtTime(tNextHist(cPulse) + offset);
         end
 
@@ -226,12 +228,6 @@ for iTrial = 1:nTrial
 
 
         % ---------------------- wait to auditory stim disappear --------------------- %
-        if isA
-            tNextHist = WaitAndUpdateUntil(tNextHist(cPulse) + stim.a.duration + offset + 0.05, heart, ...
-                tNextHist, para);            
-            a.stop();
-        end
-
         cPulse = cPulse + 1;
     end
     
@@ -303,7 +299,7 @@ for iTrial = 1:nTrial
     % ============================================================================ %
     data(iTrial).hr_rest = hr_rest;
     data(iTrial).nPulseTotalTime = tNextHist(end) - tNextHist(1);
-    data(iTrial).nPulseAverageHR = data(iTrial).nPulseTotalTime / length(tNextHist);
+    data(iTrial).nPulseAverageHR = (length(tNextHist)-1) / data(iTrial).nPulseTotalTime;
     
     % Save to file
     Struct2File(datapath_CSV, data, '\t');

@@ -28,8 +28,7 @@ while GetSecs() < t0 + calibration.sampleTime
     % Goto by key
     [keyIsDown, ~, keyCode] = KbCheck();
     if keyIsDown
-        if strcmp(KbName(keyCode), 'q')
-            KbReleaseWait();
+        if strcmp(KbName(keyCode), 'q')            
             break           
         end        
     end
@@ -39,3 +38,5 @@ end
 if ~isempty(hr_hist)
     hr_mean = mean(hr_hist);
 end
+
+KbReleaseWait();
