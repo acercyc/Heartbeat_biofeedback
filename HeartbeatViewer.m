@@ -6,6 +6,7 @@ close all
 clear classes
 clc
 instrreset
+ 
 
 
 %% open port

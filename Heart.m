@@ -68,7 +68,7 @@ classdef Heart < handle
             if length(peakInd) < 2, return, end
             
             peakTime = t(peakInd);
-            hr = obj.f_HR(peakTime);  
+            hr = obj.f_HR(peakTime);
             sd = std(diff(peakTime));
             pred = obj.f_pred(peakTime, 1);            
         end

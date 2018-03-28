@@ -117,7 +117,7 @@ para.calibration.nStableWaveSampleCriterium = 7;     % n stable sample to wait f
 % ============================================================================ %
 % ---------------------------------- device ---------------------------------- %
 para.device.monitorID      = 0;   % presentation monitor ID
-para.device.testWindowSize = [0, 0, 500, 500];  % if not empty, open a testing window
+para.device.testWindowSize = [];  % [0, 0, 500, 500];  % if not empty, open a testing window
 para.device.fs             = 75;  % in HZ
 
 % -------------------------------- serial port ------------------------------- %

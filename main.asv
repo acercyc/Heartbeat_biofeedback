@@ -176,8 +176,9 @@ for iTrial = 1:nTrial
     [~, ~, tNext, ~, ~, ~] = heart.cal_info();
     warmupHist(1) = tNext;
     while sum(~isnan(warmupHist)) == 0
-        [~, ~, tNext, ~, ~, ~] = heart.cal_info();
-        warmupHist = tNextHist_update(tNext, warmupHist, para.pred.tMinimal);
+        [hr, ~, tNext, ~, ~, ~] = heart.cal_info();
+        tNextHist_update(,para.pred.tMinimal
+        warmupHist = tNextHist_update_byRatio(tNext, warmupHist, hr, para.pred.tMinimalHrRatio);
     end
     tNextHist(1) = tNext;
     
@@ -187,8 +188,8 @@ for iTrial = 1:nTrial
     while cPulse <= design.nPulseInTrial
         
         if cPulse ~= 1  % warm up
-            [~, ~, tNext, ~, ~, ~] = heart.cal_info();
-            tNextHist = tNextHist_update(tNext, tNextHist, para.pred.tMinimal);
+            [hr, ~, tNext, ~, ~, ~] = heart.cal_info();        
+            tNextHist = tNextHist_update_byRatio(tNext, tNextHist, hr, para.pred.tMinimalHrRatio);
         end
         
         
