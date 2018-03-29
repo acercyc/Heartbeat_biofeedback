@@ -10,6 +10,7 @@ hr_hist = [];
 hr_mean = 0;
 
 t0 = GetSecs();
+RestrictKeysForKbCheck(KbName('q'));
 while GetSecs() < t0 + calibration.sampleTime
 
     % calculate HR
@@ -28,9 +29,7 @@ while GetSecs() < t0 + calibration.sampleTime
     % Goto by key
     [keyIsDown, ~, keyCode] = KbCheck();
     if keyIsDown
-        if strcmp(KbName(keyCode), 'q')            
-            break           
-        end        
+        break    
     end
 end
 
@@ -39,4 +38,5 @@ if ~isempty(hr_hist)
     hr_mean = mean(hr_hist);
 end
 
-KbReleaseWait();
+% KbReleaseWait();
+RestrictKeysForKbCheck([]);
