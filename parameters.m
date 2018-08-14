@@ -27,7 +27,7 @@ para.design.nPulseInTrial   = 10;    % num of heartbeat pulse presented in a tri
 para.design.nTrialInBlock   = 20;    % num of trial in a experimental block
 para.design.nBlockInSession = 4;     % num of block in a whole session
 para.design.modality        = 'AV';  % 'A', 'V', or 'AV' (A: auditory, V: visual stimulus)
-para.design.asyncOffset     = 0.5;   % asyncrony trial heartbeat time shift (in second)
+para.design.asyncOffset     = 0.3;   % asyncrony trial heartbeat time shift (in second)
 para.design.asyncTrialRate  = 0.5;   % ration of asyncrony trials in all trials
 
 
@@ -57,7 +57,7 @@ para.resp.keyNextTrial = 'space';       % response key based on KbName in Psycht
 % Notice that, \n represent "new line" 
 % Caution!!! %s, %f determine presented values of variables. Don't delete them. 
 
-para.msg.Welcome = 'Welcome to this experiment\n\nPress SPACE to start';
+para.msg.Welcome = '実験を始めます。\n\nスペースを押すと始まります。';
 
 para.msg.RestingCalibrationStart = '--- Resting State Calibration ---\n\n\nPress Space to Continue';
 para.msg.ExpStart = 'Experiment Start\n\nPress Space to Continue';
@@ -137,8 +137,12 @@ para.detect.windowSize = 5;     % window size to compute heartbeat information i
 
 
 % --------------------------- heartbeat prediction --------------------------- %
-para.pred.tMinimal        = 0.3;  % minimal duration between heartbeat (in second)
-para.pred.tMinimalHrRatio = 0.7;  % minimal heartbear interval based on the ration of current heartbeat estimatoin
+para.pred.tMinimal        = 0.3;    % minimal duration between heartbeat (in second)
+para.pred.tMinimalHrRatio = 0.7;    % minimal heartbear interval based on the ration of current heartbeat estimatoin
+para.pred.tQRS            = 0.09/2; % half QRS interval bringing the next prediction to the R-wave raising edge
+para.pred.tDelay2Finger   = 0.25;   % pulse time delay to the fingers
+
+% predicted time = peaktime - tQRS + tDelay2Finger
 
 
 

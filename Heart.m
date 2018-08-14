@@ -24,6 +24,8 @@ classdef Heart < handle
             obj.para = parameters();
             instrreset();
             
+            obj.s.UserData.lastRequestTime = []; 
+            
             % ==================================== %
             % define serial port obj
             % ==================================== %
@@ -33,8 +35,6 @@ classdef Heart < handle
             obj.s.BytesAvailableFcnMode = 'byte';
             
             obj.s.UserData.data = [];
-            obj.s.UserData.lastRequestTime = []; 
-            
             fopen(obj.s);
         end
         
@@ -70,7 +70,7 @@ classdef Heart < handle
             peakTime = t(peakInd);
             hr = obj.f_HR(peakTime);
             sd = std(diff(peakTime));
-            pred = obj.f_pred(peakTime, 1);
+            pred = obj.f_pred(peakTime, 1)-obj.para.pred.tQRS + obj.para.pred.tDelay2Finger;
         end
         
         function [amp, t] = extractAmpAndTime(obj)
@@ -105,7 +105,7 @@ classdef Heart < handle
                 return 
             end 
             
-            pred = obj.f_pred(t(peakInd(1:end-1)), 1);
+            pred = obj.f_pred(t(peakInd(1:end-1)), 1)-obj.para.pred.tQRS + obj.para.pred.tDelay2Finger;
                  
 
             % =============== Plot =============== %
@@ -116,8 +116,8 @@ classdef Heart < handle
             hold on
 
             % Peak points                               
-            plot(t(peakInd)-tNow, amp(peakInd), 'or');
-
+            plot(t(peakInd)-tNow, amp(peakInd), 'or');            
+            
             % prediction 
             vRange = [min(amp), max(amp)];
             plot([pred, pred]-tNow, vRange, 'r');                
